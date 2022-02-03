@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>登录</title>
+    <script src="jquery-1.2.1.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    function Login()
+    {
+        if(document.getElementById("txtName").value=="")
+        {
+            alert("请输入用户名");
+        }
+        else
+        {
+        document.getElementById("btnLogin").value="请稍等";
+        document.getElementById("btnLogin").disabled=true;
+        $("#DivLoading").html("<img src='loading.gif'>");
+        setTimeout(LoginMod,2000);
+        }
+    }
+    
+    function LoginMod()
+    {
+        var name=document.getElementById("txtName").value;
+        $.ajax({
+        type: "GET",
+        url: "ajax.aspx",
+        data: "mod=Login&v="+new Date()+"&name=" + name,
+        success: function(msg) {
+        if(msg=="OK")
+        {
+            window.location="Main.html";
+        }
+        else
+        {
+            alert("Error");
+            document.getElementById("btnLogin").value="登录";
+            document.getElementById("btnLogin").disabled=false;
+            $("#DivLoading").html("");
+        }
+            }
+        });
+    }
+    </script>
+    <style type="text/css">
+        #btnLogin {
+            width: 81px;
+            height: 26px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div align="center">
+    
+        Xluo JQuery聊天室<br />
+        <br />
+        用户名：<input id="txtName" type="text" />
+        <input id="btnLogin" type="button" value="登录" onclick="Login()" /><br />
+        <br />
+        <div id="DivLoading"></div>
+        <br />
+        版权所有，侵权必究。
+<br><br>
+QQ：365160297 Blog:<a href='http://luo91820.blog.163.com/'>http://luo91820.blog.163.com/</a></div>
+    </form>
+<p>
+    &nbsp;</p>
+</body>
+</html>

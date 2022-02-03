@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SendMessage</title>
+    <script src="jquery-1.2.1.js" type="text/javascript"></script>
+    <style type="text/css">
+        #txtMessage
+        {
+            height: 40px;
+            width: 333px;
+        }
+        #btnSend
+        {
+            height: 35px;
+            width: 65px;
+        }
+    </style>
+<script language="javascript" type="text/javascript">
+// <!CDATA[
+
+function btnSend_onclick() 
+{
+    if(document.getElementById("txtMessage").value=="")
+    {
+        alert("请输入消息内容");
+    }
+    else
+    {
+        document.getElementById("btnSend").value="请稍等";
+        document.getElementById("btnSend").disabled=true;
+        $("#DivLoading").html("<img src='loading.gif'>");
+        setTimeout(SendMod,500);
+    }
+}
+
+function SendMod()
+{
+        var mess=document.getElementById("txtMessage").value;
+        $.ajax({
+        type: "GET",
+        url: "ajax.aspx",
+        data: "mod=SendMessage&v="+new Date()+"&mess=" +mess ,
+        success: function(msg) {
+        if(msg=="SendOk")
+        {
+            document.getElementById("txtMessage").value="";
+            document.getElementById("btnSend").value="发送";
+            document.getElementById("btnSend").disabled=false;
+            $("#DivLoading").html("");
+        }
+            }
+        });
+
+}
+// ]]>
+</script>
+</head>
+<body>
+<div align="center">
+
+    消息内容：<textarea id="txtMessage"></textarea>
+    <input id="btnSend" type="button" value="发送" onclick="return btnSend_onclick()" />
+    <div id="DivLoading"></div>
+    </div>
+</body>
+</html>

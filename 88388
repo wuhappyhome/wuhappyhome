@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Collections.Generic;
+
+public partial class ajax : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            if (Request.QueryString["mod"] == null)
+            {
+                Response.Write("Error");
+            }
+            else
+            {
+                string mod = Request.QueryString["mod"];
+                if (mod == "Login")
+                {
+                    Login();
+                }
+                else if (mod == "GetOnlineUserList")
+                {
+                    GetOnlineUserList();
+                }
+                else if (mod == "SendMessage")
+                {
+                    SendMessage();
+                }
+                else if (mod == "GetMessageList")
+                {
+                    GetMessageList();
+                }
+                else
+                {
+                    Response.Write("Not Mod");
+                }
+            }
+        }
+    }
+
+    public void Login()
+    {
+        string name = Request.QueryString["name"];
+        List<string> userList = (List<string>)Application["USERLIST"];
+        if (userList == null)
+        {
+            userList = new List<string>();
+            userList.Add(name);
+        }
+        else
+        {
+            userList.Add(name);
+        }
+        Application["USERLIST"] = userList;
+        Session["USER"] = name;
+        Response.Write("OK");
+    }
+
+    public void GetOnlineUserList()
+    {
+        string userListHtml = string.Empty;
+        List<string> userList = (List<string>)Application["USERLIST"];
+        if (userList == null)
+        {
+            userList = new List<string>();
+        }
+        foreach (string str in userList)
+        {
+            userListHtml += str + "</br>";
+        }
+        Response.Write(userListHtml);
+    }
+
+    public void SendMessage()
+    {
+        string name = Session["USER"].ToString();
+        string mess = Request.QueryString["mess"];
+        string message = name + " 于 " + DateTime.Now.ToString() + " 说: " + mess;
+        List<string> messageList = (List<string>)Application["MESSAGELIST"];
+        if (messageList == null)
+        {
+            messageList = new List<string>();
+        }
+        messageList.Add(message);
+        Application["MESSAGELIST"] = messageList;
+        Response.Write("SendOk");
+    }
+
+    public void GetMessageList()
+    {
+        string message = string.Empty;
+        List<string> messageList = (List<string>)Application["MESSAGELIST"];
+        if (messageList == null)
+        {
+            Response.Write("暂无聊天记录");
+        }
+        else
+        {
+            foreach (string str in messageList)
+            {
+                message += str + "</br>";
+            }
+            Response.Write(message);
+        }
+    }
+}
